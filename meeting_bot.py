@@ -1,5 +1,5 @@
 """
-FLO 회의록 자동화 파이프라인
+회의록 자동화 파이프라인
 STT (Whisper 또는 CLOVA Speech) → Claude (정제 + 요약) → Markdown → Confluence
 
 사용법:
@@ -13,8 +13,8 @@ STT (Whisper 또는 CLOVA Speech) → Claude (정제 + 요약) → Markdown → 
     ANTHROPIC_API_KEY       = your_anthropic_api_key
     CLOVA_INVOKE_URL        = https://clovaspeech-gw.ncloud.com/external/v1/...  (clova 사용 시)
     CLOVA_SECRET_KEY        = your_secret_key                                     (clova 사용 시)
-    CONFLUENCE_URL          = https://music-flo.atlassian.net
-    CONFLUENCE_EMAIL        = your@flo.com
+    CONFLUENCE_URL          = https://your-domain.atlassian.net
+    CONFLUENCE_EMAIL        = your@email.com
     CONFLUENCE_API_TOKEN    = your_confluence_api_token
     CONFLUENCE_PARENT_ID    = 4807229822
 """
@@ -37,7 +37,7 @@ load_dotenv()
 ANTHROPIC_API_KEY    = os.getenv("ANTHROPIC_API_KEY")
 CLOVA_INVOKE_URL     = os.getenv("CLOVA_INVOKE_URL")
 CLOVA_SECRET_KEY     = os.getenv("CLOVA_SECRET_KEY")
-CONFLUENCE_URL       = os.getenv("CONFLUENCE_URL", "https://music-flo.atlassian.net")
+CONFLUENCE_URL       = os.getenv("CONFLUENCE_URL", "https://your-domain.atlassian.net")
 CONFLUENCE_EMAIL     = os.getenv("CONFLUENCE_EMAIL")
 CONFLUENCE_API_TOKEN = os.getenv("CONFLUENCE_API_TOKEN")
 CONFLUENCE_PARENT_ID = os.getenv("CONFLUENCE_PARENT_ID", "4807229822")
@@ -173,7 +173,7 @@ def generate_minutes(
     message = client.messages.create(
         model=CLAUDE_MODEL,
         max_tokens=4096,
-        messages=[{"role": "user", "content": f"""당신은 FLO 내부 회의 기록 전문가입니다.
+        messages=[{"role": "user", "content": f"""당신은 내부 회의 기록 전문가입니다.
 아래 스크립트를 분석해 실용적인 회의록을 작성해주세요.
 
 ## 회의 정보
@@ -330,7 +330,7 @@ def run_pipeline(audio_path: str, title: str, attendees_str: str, stt_engine: st
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
     start = time.time()
-    print(f"\n🎙️  FLO 회의록 자동화 시작")
+    print(f"\n🎙️  회의록 자동화 시작")
     print(f"   파일: {audio_path}")
     print(f"   STT: {stt_engine.upper()}")
     print(f"   제목: {title}")
@@ -372,7 +372,7 @@ def run_pipeline(audio_path: str, title: str, attendees_str: str, stt_engine: st
 
 # ── CLI ──────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="FLO 회의록 자동화 봇")
+    parser = argparse.ArgumentParser(description="회의록 자동화 봇")
     parser.add_argument("--file",      required=True,  help="음성 파일 경로")
     parser.add_argument("--title",     default="팀 회의", help="회의 제목")
     parser.add_argument("--attendees", default="",     help="참석자 (쉼표 구분)")
